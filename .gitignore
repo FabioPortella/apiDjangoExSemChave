@@ -1,0 +1,120 @@
+# Ignorar arquivos Python gerados
+__pycache__/
+*.pyc
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar o banco de dados SQLite
+db.sqlite3
+
+# Ignorar arquivos de mídia (uploads, etc.)
+media/
+
+# Ignorar arquivos de backup
+*.bak
+
+# Ignorar configurações específicas do ambiente de desenvolvimento (por exemplo, arquivos do PyCharm)
+.idea/
+
+# Ignorar arquivos gerados pelo Gradle
+.idea/gradle.xml
+.idea/libraries
+
+# Ignorar arquivos gerados pelo IntelliJ
+.idea/contentModel.xml
+
+# Ignorar arquivos gerados pelo JIRA plugin
+atlassian-ide-plugin.xml
+
+# Ignorar arquivos gerados pelo Python
+*.py[cod]
+*$py.class
+
+# Ignorar arquivos gerados durante a distribuição/pacote
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Ignorar logs do instalador do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignorar relatórios de testes de unidade/coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Ignorar arquivos do Jupyter Notebook
+.ipynb_checkpoints
+
+# Ignorar arquivos do pyenv
+.python-version
+
+# Ignorar arquivos do celery
+celerybeat-schedule.*
+
+# Ignorar arquivos do SageMath
+*.sage.py
+
+# Ignorar ambientes virtuais
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignorar documentação do mkdocs
+/site
+
+# Ignorar cache do mypy
+.mypy_cache/
+
+# Ignorar arquivos específicos do Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Ignorar arquivo de configuração sftp
+sftp-config.json
+
+# Ignorar arquivos específicos do Package Control
+Package Control.last-run
+Package Control.ca-list
+Package Control.ca-bundle
+Package Control.system-ca-bundle
+GitHub.sublime-settings
+
+# Ignorar arquivos específicos do Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
