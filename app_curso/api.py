@@ -1,4 +1,4 @@
-from typing import List
+from typing import Optional, List
 from ninja import NinjaAPI
 
 from .schema import NotFoundSchema, TipoCursoSchema
@@ -6,18 +6,24 @@ from .models import Curso, TipoCurso
 
 api = NinjaAPI()
 
-@api.get('/tipocurso', response=List[TipoCursoSchema])
-def listar(request):
-    return TipoCurso.objects.all()
+@api.get('/tipocurso', response={200: List[TipoCursoSchema], 400: NotFoundSchema})
+def listar(request, nome: Optional[str] = None):
+    try:
+        if nome:
+            return 200, TipoCurso.objects.filter(nome__icontains=nome)
+        return 200, TipoCurso.objects.all() 
+    except Exception as e:
+        return 400, {"message": "Erro ao listar Tipo de Curso"}
 
 
 @api.get('/tipocurso/{id}', response={200: TipoCursoSchema, 404: NotFoundSchema})
 def obter(request, id: int):
     try:
         tipocurso = TipoCurso.objects.get(pk=id)
-        return tipocurso
+        return 200, tipocurso
     except TipoCurso.DoesNotExist as e:
         return 404, {"message": "Tipo de Curso não cadastrado"}
+    
     
 @api.post('/tipocurso', response={201: TipoCursoSchema, 400: NotFoundSchema})
 def inserir(request, tipoCurso: TipoCursoSchema) -> TipoCurso:
@@ -38,7 +44,7 @@ def inserir(request, tipoCurso: TipoCursoSchema) -> TipoCurso:
     
 
 @api.put('/tipocurso/{id}', response={200: TipoCursoSchema, 404: NotFoundSchema, 400: NotFoundSchema})
-def atualizar(request, id: int, tipoCurso: TipoCursoSchema) -> TipoCurso:
+def atualizar(request, id: int, tipoCursoAlterado: TipoCursoSchema) -> TipoCurso:
     try:
         # Verifica se o TipoCurso existe
         try:
@@ -47,15 +53,31 @@ def atualizar(request, id: int, tipoCurso: TipoCursoSchema) -> TipoCurso:
             return 404, {"message": "Tipo de Curso não encontrado."}
         
         # Verifica se o nome tem menos de três caracteres ou se é composto apenas por espaços em branco
-        if len(tipoCurso.nome.strip()) < 3:
+        if len(tipoCursoAlterado.nome.strip()) < 3:
             return 400, {"message": "O nome do Tipo de Curso deve ter pelo menos três caracteres e não pode ser composto por espaços em branco."}
         
         # Atualiza os dados do TipoCurso
-        tipo_curso_atual.nome = tipoCurso.nome
-        tipo_curso_atual.descricao = tipoCurso.descricao
-        tipo_curso_atual.save()
+        # tipo_curso_atual.nome = tipoCursoAlterado.nome
+        # tipo_curso_atual.descricao = tipoCursoAlterado.descricao
+        for attribute, value in tipoCursoAlterado.dict().items():
+            setattr(tipo_curso_atual, attribute, value)
+        tipo_curso_atual.save()        
         
         return 200, tipo_curso_atual
+    
     except Exception as e:
         return 400, {"message": "Erro ao atualizar o Tipo de Curso"}
+    
 
+@api.delete('/tipocurso/{id}', response={200: None, 404: NotFoundSchema, 400: NotFoundSchema})
+def remover(request, id: int):
+    try:
+        try:
+            tipo_curso = TipoCurso.objects.get(pk=id)
+        except TipoCurso.DoesNotExist:
+            return 404, {"message": "Tipo de Curso não encontrado."}
+        
+        tipo_curso.delete()
+        return 200, None
+    except Exception as e:
+        return 400, {"message": "Erro ao excluir o Tipo de Curso"}
