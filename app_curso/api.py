@@ -6,10 +6,13 @@ from .models import Curso, TipoCurso
 
 api = NinjaAPI()
 
-@api.get('/tipocurso', response={200: List[TipoCursoSchema], 400: NotFoundSchema})
+@api.get('/tipocurso', response={200: List[TipoCursoSchema], 400: NotFoundSchema, 404: NotFoundSchema})
 def listar(request, nome: Optional[str] = None):
     try:
         if nome:
+            tipo_curso = TipoCurso.objects.filter(nome__icontains=nome)
+            if not tipo_curso:
+                return 404, {"message": "Este NOME não está cadastrado como Tipo de Curso"}
             return 200, TipoCurso.objects.filter(nome__icontains=nome)
         return 200, TipoCurso.objects.all() 
     except Exception as e:
@@ -57,8 +60,6 @@ def atualizar(request, id: int, tipoCursoAlterado: TipoCursoSchema) -> TipoCurso
             return 400, {"message": "O nome do Tipo de Curso deve ter pelo menos três caracteres e não pode ser composto por espaços em branco."}
         
         # Atualiza os dados do TipoCurso
-        # tipo_curso_atual.nome = tipoCursoAlterado.nome
-        # tipo_curso_atual.descricao = tipoCursoAlterado.descricao
         for attribute, value in tipoCursoAlterado.dict().items():
             setattr(tipo_curso_atual, attribute, value)
         tipo_curso_atual.save()        
