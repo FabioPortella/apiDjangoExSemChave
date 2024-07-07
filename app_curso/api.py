@@ -2,11 +2,27 @@ from typing import Optional, List
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from ninja import NinjaAPI
+from ninja.security import APIKeyHeader
+from django.http import HttpRequest
+from ninja.errors import HttpError
+import environ
 
 from .schema import CursoCreateSchema, NotFoundSchema, TipoCursoSchema, CursoSchema
 from .models import Curso, TipoCurso
 
-api = NinjaAPI()
+# Inicializa a leitura das variáveis de ambiente
+env = environ.Env()
+environ.Env.read_env()
+
+class APIKeyAuth(APIKeyHeader):
+    param_name = "X-API-Key"
+
+    def authenticate(self, request: HttpRequest, key: str):
+        if key == env('API_KEY'):
+            return key
+        raise HttpError(401, "Invalid API Key")
+
+api = NinjaAPI(auth=APIKeyAuth())
 
 @api.get('/tipocurso', response={200: List[TipoCursoSchema], 400: NotFoundSchema, 404: NotFoundSchema})
 def listar(request, nome: Optional[str] = None):
@@ -124,6 +140,8 @@ def inserir_curso(request, payload: CursoCreateSchema):
         tipoDoCurso=tipo_do_curso
     )
     return 201, curso
+
+#TODO: Criar PUT - atualizar_curso
 
 @api.delete('/curso/{id}', response={200: None, 404: NotFoundSchema, 400: NotFoundSchema})
 def remover_curso(request, id: int):
