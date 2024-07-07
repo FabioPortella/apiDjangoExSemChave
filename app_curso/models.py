@@ -14,12 +14,10 @@ class TipoCurso(models.Model):
 
 class Curso(models.Model):
     nome = models.CharField(max_length=100, unique=True)
-    tipo_curso_id = models.ForeignKey(TipoCurso, on_delete=models.CASCADE)
+    tipoDoCurso = models.ForeignKey(TipoCurso, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['nome']
 
     def __str__(self) -> str:
-        return self.nome
-    
-
+        return self.nome   
